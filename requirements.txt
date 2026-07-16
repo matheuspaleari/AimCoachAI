@@ -1,0 +1,27 @@
+pandas
+numpy
+matplotlib
+scikit-learn
+streamlit
+joblib
+jupyter
+openpyxl
+
+# Visualização
+plotly
+
+# Barras de progresso
+tqdm
+
+# Variáveis de ambiente
+python-dotenv
+
+# Testes
+pytest
+
+# Formatação de código
+black
+isort
+
+# Verificação de estilo
+flake8
