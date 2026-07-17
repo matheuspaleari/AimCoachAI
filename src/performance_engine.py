@@ -35,30 +35,51 @@ def calcular_variacao_percentual(
     return round(variacao, 2)
 
 
+def calcular_variacao_pontos(
+    valor_inicial: float,
+    valor_final: float,
+) -> float:
+    """
+    Calcula a diferença em pontos entre dois valores.
+    """
+
+    if pd.isna(valor_inicial) or pd.isna(valor_final):
+        return 0.0
+
+    return round(float(valor_final - valor_inicial), 2)
+
+
 def classificar_tendencia(
     serie: pd.Series,
-    limite: float = 1.0,
+    janela_media: int = 5,
+    limite_pontos: float = 2.0,
 ) -> str:
     """
-    Classifica uma série como crescente, estável ou decrescente.
+    Classifica a tendência como crescente, estável ou decrescente.
 
-    O limite evita classificar pequenas oscilações como tendência.
+    Compara a média do início da janela com a média do fim da janela.
+    Pequenas oscilações dentro do limite são consideradas estáveis.
     """
 
-    serie = serie.dropna()
+    serie = serie.dropna().astype(float)
 
-    if len(serie) < 2:
+    if len(serie) < 4:
         return "dados insuficientes"
 
-    primeiro_valor = serie.iloc[0]
-    ultimo_valor = serie.iloc[-1]
+    tamanho_bloco = min(
+        janela_media,
+        max(2, len(serie) // 3),
+    )
 
-    diferenca = ultimo_valor - primeiro_valor
+    media_inicial = serie.head(tamanho_bloco).mean()
+    media_final = serie.tail(tamanho_bloco).mean()
 
-    if diferenca > limite:
+    diferenca = media_final - media_inicial
+
+    if diferenca > limite_pontos:
         return "crescente"
 
-    if diferenca < -limite:
+    if diferenca < -limite_pontos:
         return "decrescente"
 
     return "estável"
@@ -67,48 +88,64 @@ def classificar_tendencia(
 def analisar_habilidade(
     dados: pd.DataFrame,
     coluna: str,
-    janela: int = 5,
+    janela: int = 15,
 ) -> dict:
     """
     Analisa o histórico completo e a tendência recente
     de uma habilidade.
     """
 
-    serie_completa = dados[coluna].dropna()
+    serie_completa = dados[coluna].dropna().astype(float)
 
     if serie_completa.empty:
         return {
             "score_atual": 0.0,
             "media_historica": 0.0,
+            "media_recente": 0.0,
             "melhor_score": 0.0,
             "pior_score": 0.0,
             "variacao_total_percentual": 0.0,
+            "variacao_total_pontos": 0.0,
+            "diferenca_media_historica": 0.0,
             "tendencia_recente": "dados insuficientes",
         }
 
     serie_recente = serie_completa.tail(janela)
 
-    score_atual = serie_completa.iloc[-1]
-    score_inicial = serie_completa.iloc[0]
+    score_atual = float(serie_completa.iloc[-1])
+    score_inicial = float(serie_completa.iloc[0])
+    media_historica = float(serie_completa.mean())
+    media_recente = float(serie_recente.mean())
 
     return {
-        "score_atual": round(float(score_atual), 2),
-        "media_historica": round(float(serie_completa.mean()), 2),
+        "score_atual": round(score_atual, 2),
+        "media_historica": round(media_historica, 2),
+        "media_recente": round(media_recente, 2),
         "melhor_score": round(float(serie_completa.max()), 2),
         "pior_score": round(float(serie_completa.min()), 2),
         "variacao_total_percentual": calcular_variacao_percentual(
             score_inicial,
             score_atual,
         ),
+        "variacao_total_pontos": calcular_variacao_pontos(
+            score_inicial,
+            score_atual,
+        ),
+        "diferenca_media_historica": round(
+            media_recente - media_historica,
+            2,
+        ),
         "tendencia_recente": classificar_tendencia(
             serie_recente,
+            janela_media=5,
+            limite_pontos=2.0,
         ),
     }
 
 
 def analisar_performance(
     scores: pd.DataFrame,
-    janela: int = 5,
+    janela: int = 15,
 ) -> dict:
     """
     Analisa a evolução do jogador ao longo dos treinos.
