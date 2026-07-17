@@ -3,6 +3,7 @@ from pathlib import Path
 
 import plotly.graph_objects as go
 import streamlit as st
+import pandas as pd
 
 
 # ==========================================================
@@ -20,6 +21,7 @@ from src.performance_engine import analisar_performance
 from src.player_profile import gerar_perfil_jogador
 from src.preprocessing import limpar_dados
 from src.score_engine import calcular_scores
+from src.coach_ai import gerar_recomendacao_coach
 
 
 # ==========================================================
@@ -45,39 +47,48 @@ def executar_pipeline():
     dados = carregar_dados()
 
     if dados.empty:
-        return None, None, None, None
+        return None, None, None, None, None
 
     dados_limpos = limpar_dados(dados)
 
     if dados_limpos.empty:
-        return None, None, None, None
+        return None, None, None, None, None
 
     features = criar_features_treino(dados_limpos)
 
     if features.empty:
-        return None, None, None, None
+        return None, None, None, None, None
 
     scores = calcular_scores(features)
 
     if scores.empty:
-        return None, None, None, None
+       return None, None, None, None, None
 
     analise = analisar_performance(scores)
 
     if not analise:
-        return None, None, None, None
+        return None, None, None, None, None
 
     insights = gerar_insights(analise)
 
     if not insights:
-        return None, None, None, None
+        return None, None, None, None, None
 
     perfil = gerar_perfil_jogador(scores)
 
     if not perfil:
-        return None, None, None, None
+        return None, None, None, None, None
 
-    return scores, analise, insights, perfil
+    recomendacao = gerar_recomendacao_coach(
+        scores=scores,
+        analise=analise,
+        perfil=perfil,
+)
+
+    if not recomendacao:
+        return None, None, None, None, None
+
+    return scores, analise, insights, perfil, recomendacao
 
 
 def filtrar_periodo(
@@ -119,7 +130,7 @@ st.caption(
 # EXECUÇÃO DO PIPELINE
 # ==========================================================
 
-scores, analise, insights, perfil = executar_pipeline()
+scores, analise, insights, perfil, recomendacao = executar_pipeline()
 
 if scores is None:
     st.warning(
@@ -164,6 +175,69 @@ col_perfil4.metric(
 st.info(perfil["descricao"])
 
 st.divider()
+
+
+# ==========================================================
+# COACH AI
+# ==========================================================
+
+with st.expander(
+    "🧠 Coach AI • Plano de treino personalizado",
+    expanded=True,
+):
+    col_coach1, col_coach2, col_coach3 = st.columns(3)
+
+    col_coach1.metric("Habilidade prioritária", recomendacao["habilidade_prioritaria"])
+    col_coach2.metric("Prioridade", recomendacao["prioridade"])
+    col_coach3.metric("Tempo sugerido", f"{recomendacao['duracao_total_minutos']} minutos")
+
+    st.write("**Objetivo principal**")
+    st.info(recomendacao["objetivo_principal"])
+
+    st.write("**📋 Plano da sessão**")
+
+    exercicios_concluidos = []
+
+    for ordem, exercicio in enumerate(recomendacao["exercicios"], start=1):
+
+        col_check, col_exercicio, col_tempo, col_objetivo = st.columns([0.5,2.5,1,4])
+
+        with col_check:
+            concluido = st.checkbox("", key=f"coach_exercicio_{ordem}")
+
+        with col_exercicio:
+            st.markdown(f"**{ordem}️⃣ 🎯 {exercicio['nome']}**")
+
+        with col_tempo:
+            st.markdown(f"⏱ **{exercicio['duracao_minutos']} min**")
+
+        with col_objetivo:
+            st.caption(exercicio["foco"])
+
+        exercicios_concluidos.append(concluido)
+
+    quantidade_concluida = sum(exercicios_concluidos)
+    quantidade_total = len(exercicios_concluidos)
+
+    progresso = quantidade_concluida / quantidade_total if quantidade_total else 0
+
+    st.progress(
+        progresso,
+        text=f"Sessão concluída: {quantidade_concluida}/{quantidade_total} exercícios",
+    )
+
+    if quantidade_concluida == quantidade_total:
+        st.success("✅ Sessão concluída! Excelente trabalho.")
+
+    meta = recomendacao["meta"]
+
+    st.write("**Meta de curto prazo**")
+    st.success(
+        f"{meta['habilidade']}: {meta['score_atual']:.2f} → {meta['score_meta']:.2f} (+{meta['ganho_necessario']:.2f})"
+    )
+
+    st.write("**Por que essa recomendação?**")
+    st.info(recomendacao["explicacao"])
 
 
 # ==========================================================
@@ -244,17 +318,20 @@ st.divider()
 # INSIGHTS
 # ==========================================================
 
-st.subheader("💡 Insights")
+with st.expander(
+    "💡 Insights e conclusão",
+    expanded=True,
+):
+    st.subheader("Insights")
 
-for insight in insights["habilidades"].values():
-    st.info(insight["mensagem"])
+    for insight in insights["habilidades"].values():
+        st.info(insight["mensagem"])
 
-st.subheader("Conclusão")
+    st.subheader("Conclusão")
 
-for conclusao in insights["conclusoes"]:
-    st.write(f"✅ {conclusao}")
+    for conclusao in insights["conclusoes"]:
+        st.write(f"✅ {conclusao}")
 
-st.divider()
 
 
 # ==========================================================

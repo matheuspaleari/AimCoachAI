@@ -1,12 +1,13 @@
+from src.coach_ai import gerar_recomendacao_coach
+from src.feature_engineering import criar_features_treino
+from src.insights_engine import gerar_insights
 from src.load_data import carregar_dados
+from src.performance_engine import analisar_performance
+from src.player_profile import gerar_perfil_jogador
 from src.preprocessing import limpar_dados
 from src.save_data import salvar_dados
-from src.feature_engineering import criar_features_treino
 from src.score_engine import calcular_scores
-from src.player_profile import gerar_perfil_jogador
-from src.performance_engine import analisar_performance
-from src.insights_engine import gerar_insights
-from src.utils import log_info, log_aviso
+from src.utils import log_aviso, log_info
 
 
 def main():
@@ -17,7 +18,7 @@ def main():
     log_info("Iniciando o pipeline do AimCoachAI.")
 
     # ==========================================================
-    # 2. CARREGA OS DADOS
+    # 2. CARREGAMENTO DOS DADOS
     # ==========================================================
 
     dados = carregar_dados()
@@ -68,10 +69,10 @@ def main():
         log_aviso("Não foi possível gerar o perfil do jogador.")
         return
 
-    print("\n")
-    print("=" * 45)
+    print()
+    print("=" * 50)
     print("👤 PERFIL DO JOGADOR")
-    print("=" * 45)
+    print("=" * 50)
     print(f"🏆 Nível: {perfil['nivel']}")
     print(f"🎯 Estilo: {perfil['estilo']}")
     print(f"⭐ Especialidade: {perfil['especialidade']}")
@@ -79,7 +80,7 @@ def main():
     print(f"📊 Score Geral: {perfil['score_geral']:.2f}")
     print()
     print(f"💬 {perfil['descricao']}")
-    print("=" * 45)
+    print("=" * 50)
 
     # ==========================================================
     # 7. PERFORMANCE ENGINE
@@ -112,7 +113,79 @@ def main():
         print(f"- {linha}")
 
     # ==========================================================
-    # 9. RESUMO
+    # 9. COACH AI
+    # ==========================================================
+
+    recomendacao = gerar_recomendacao_coach(
+        scores=scores,
+        analise=analise,
+        perfil=perfil,
+    )
+
+    if not recomendacao:
+        log_aviso("Não foi possível gerar a recomendação do Coach AI.")
+        return
+
+    print()
+    print("=" * 50)
+    print("🧠 COACH AI")
+    print("=" * 50)
+
+    print(
+        f"🎯 Habilidade prioritária: "
+        f"{recomendacao['habilidade_prioritaria']}"
+    )
+
+    print(
+        f"📌 Objetivo principal: "
+        f"{recomendacao['objetivo_principal']}"
+    )
+
+    print(
+        f"⚠ Prioridade: "
+        f"{recomendacao['prioridade']}"
+    )
+
+    print(
+        f"📈 Tendência atual: "
+        f"{recomendacao['tendencia']}"
+    )
+
+    print(
+        f"⏱ Tempo total sugerido: "
+        f"{recomendacao['duracao_total_minutos']} minutos"
+    )
+
+    print("\n📋 Plano recomendado:")
+
+    for exercicio in recomendacao["exercicios"]:
+        print(
+            f"- {exercicio['nome']}: "
+            f"{exercicio['duracao_minutos']} minutos"
+        )
+        print(f"  Foco: {exercicio['foco']}")
+
+    meta = recomendacao["meta"]
+
+    print("\n🏁 Meta de curto prazo:")
+    print(
+        f"{meta['habilidade']}: "
+        f"{meta['score_atual']:.2f} → "
+        f"{meta['score_meta']:.2f} pontos"
+    )
+
+    print(
+        f"Ganho necessário: "
+        f"{meta['ganho_necessario']:.2f} pontos"
+    )
+
+    print("\n💬 Motivo da recomendação:")
+    print(recomendacao["explicacao"])
+
+    print("=" * 50)
+
+    # ==========================================================
+    # 10. RESUMO DO PIPELINE
     # ==========================================================
 
     log_info(f"Registros brutos: {len(dados)}")
