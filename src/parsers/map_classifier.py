@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import TypedDict
 
-from src.map_catalog import MAP_CATALOG
+from src.parsers.map_catalog import MAP_CATALOG
 
 
 class MapClassification(TypedDict):

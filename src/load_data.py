@@ -3,8 +3,8 @@ from pathlib import Path
 import pandas as pd
 
 from src.config import RAW_DATA_DIR
-from src.file_classifier import identificar_tipo_csv
-from src.map_classifier import classificar_mapa
+from src.parsers.file_classifier import identificar_tipo_csv
+from src.parsers.map_classifier import classificar_mapa
 from src.utils import log_aviso, log_erro, log_info
 
 
