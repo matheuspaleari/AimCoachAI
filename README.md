@@ -1,93 +1,229 @@
 # 🎯 AimCoachAI
 
-Sistema inteligente para análise de desempenho em Aim Trainers utilizando Engenharia de Dados, Analytics, Visualização de Dados e Inteligência Artificial.
+<p align="center">
 
-O objetivo do projeto é transformar arquivos CSV gerados por jogos e softwares de treino de mira em análises inteligentes, permitindo acompanhar a evolução do jogador, identificar pontos fracos e recomendar melhorias.
+Sistema inteligente para análise de desempenho em **Aim Trainers**, utilizando **Engenharia de Dados**, **Data Analytics**, **Visualização de Dados** e **Inteligência Artificial** para acompanhar a evolução do jogador.
 
----
-
-# 🚀 Objetivos
-
-O AimCoachAI foi desenvolvido para responder perguntas como:
-
-- 📈 O jogador está evoluindo?
-- 🎯 Qual habilidade precisa de mais treino?
-- ⚡ A velocidade está melhorando?
-- 🔫 O controle dos disparos evoluiu?
-- 📊 O desempenho atual está acima da média histórica?
-- 🏆 Qual foi o melhor treino realizado?
+</p>
 
 ---
 
-# 🛠 Tecnologias Utilizadas
+## 📸 Dashboard
 
-- 🐍 Python
-- 🐼 Pandas
-- 📊 Plotly
-- 🎨 Streamlit
-- 📈 Machine Learning (em desenvolvimento)
-- 📂 CSV
-- 💻 VS Code
+> *(adicione aqui uma imagem do dashboard quando terminar o layout premium)*
+
+<p align="center">
+
+![Dashboard](images/dashboard.png)
+
+</p>
 
 ---
 
-# 📂 Estrutura do Projeto
+## 🚀 Sobre o Projeto
 
-```text
-AimCoachAI
-│
-├── app/
-│   └── streamlit_app.py
-│
-├── data/
-│   ├── raw/
-│   └── processed/
-│
-├── models/
-│
-├── notebooks/
-│
-├── reports/
-│
-├── src/
-│   ├── config.py
-│   ├── feature_engineering.py
-│   ├── insights_engine.py
-│   ├── load_data.py
-│   ├── performance_engine.py
-│   ├── player_profile.py
-│   ├── preprocessing.py
-│   ├── recommendation.py
-│   ├── save_data.py
-│   ├── score_engine.py
-│   ├── utils.py
-│   └── visualization.py
-│
-├── tests/
-│
-├── main.py
-├── requirements.txt
-└── README.md
+O **AimCoachAI** transforma os arquivos CSV gerados por Aim Trainers em análises inteligentes de desempenho.
+
+A plataforma calcula métricas avançadas, identifica padrões de evolução, gera insights automáticos e recomenda planos personalizados de treino através do **Coach AI**.
+
+O objetivo é permitir que qualquer jogador acompanhe sua evolução da mesma forma que plataformas como **Tracker.gg**, **Blitz** ou **OP.GG**, porém focado em treinamento de mira.
+
+---
+
+# ✨ Funcionalidades
+
+## 📥 Importação automática
+
+- Leitura de múltiplos CSVs
+- Histórico completo do jogador
+- Consolidação automática dos treinos
+
+---
+
+## 🧹 Pré-processamento
+
+- Remoção de registros inválidos
+- Conversão automática de tipos
+- Tratamento de valores ausentes
+- Padronização dos dados
+
+---
+
+## ⚙ Feature Engineering
+
+Extração automática de dezenas de métricas:
+
+- 🎯 Accuracy Global
+- ⚡ TTK Médio
+- 📊 Consistência
+- 🔫 Controle dos disparos
+- 💥 Overshots
+- 🎯 Kills perfeitos
+- 📈 Kills por minuto
+- 💣 Dano desperdiçado
+- ⏱ Tempo total de treino
+
+---
+
+## 🏆 Score Engine
+
+Cada treino recebe uma pontuação entre **0 e 100** para:
+
+- 🎯 Precisão
+- ⚡ Velocidade
+- 🔫 Controle
+- 📊 Consistência
+
+Além disso é calculado:
+
+⭐ Score Geral
+
+---
+
+## 👤 Player Profile
+
+Classificação automática do jogador.
+
+Exemplo:
+
+```
+🟡 Ouro
+
+🎮 Control Player
+
+Especialidade:
+Controle dos disparos
+
+Principal ponto de melhoria:
+Consistência
 ```
 
 ---
 
-# ⚙ Pipeline
+## 🧠 Coach AI
 
-```text
-Arquivos CSV
+O sistema gera automaticamente:
+
+- habilidade prioritária
+- prioridade do treino
+- objetivo principal
+- plano personalizado
+- tempo recomendado
+- meta de evolução
+- explicação do motivo da recomendação
+
+Exemplo:
+
+```
+Prioridade:
+🔴 Crítica
+
+Objetivo:
+Aumentar velocidade de aquisição de alvos.
+
+Plano:
+
+Gridshot
+12 min
+
+Spidershot Speed
+12 min
+
+Microflex
+11 min
+```
+
+---
+
+## 🏅 Sistema de XP
+
+Cada treino gera experiência.
+
+O jogador evolui automaticamente pelos elos:
+
+```
+⚫ Ferro
+
+🟤 Bronze
+
+⚪ Prata
+
+🟡 Ouro
+
+🟢 Platina
+
+🔷 Diamante
+
+🟣 Ascendente
+
+🔴 Imortal
+
+☀️ Radiante
+```
+
+Quanto maior o elo, maior será a quantidade de XP necessária para evoluir.
+
+---
+
+## 📈 Performance Engine
+
+Analisa automaticamente:
+
+- evolução histórica
+- tendência
+- crescimento
+- regressão
+- média histórica dinâmica
+- melhor treino
+- pior treino
+- comparação entre períodos
+
+---
+
+## 💡 Insights Engine
+
+Transforma métricas em linguagem natural.
+
+Exemplo:
+
+```
+Precisão apresenta evolução consistente.
+
+Velocidade caiu nos treinos recentes.
+
+Controle permanece estável.
+
+Consistência está acima da média histórica.
+```
+
+---
+
+# 📊 Dashboard Premium
+
+O dashboard apresenta:
+
+- 🏅 Sistema de XP
+- 👤 Perfil do jogador
+- 🧠 Coach AI
+- 📊 Resumo do treino
+- 📈 Evolução histórica
+- 📉 Evolução por categoria
+- 🎯 Radar de habilidades
+- 💡 Insights automáticos
+- 📈 Progressão dos elos
+
+---
+
+# 🏗 Arquitetura
+
+```
+CSV
 
         │
 
         ▼
 
-Carregamento dos dados
-
-        │
-
-        ▼
-
-Limpeza e tratamento
+Pré-processamento
 
         │
 
@@ -99,7 +235,25 @@ Feature Engineering
 
         ▼
 
+Janela Histórica
+
+        │
+
+        ▼
+
+Map Statistics
+
+        │
+
+        ▼
+
 Score Engine
+
+        │
+
+        ▼
+
+Player Profile
 
         │
 
@@ -117,150 +271,159 @@ Insights Engine
 
         ▼
 
-Dashboard Streamlit
+Coach AI
+
+        │
+
+        ▼
+
+XP Engine
+
+        │
+
+        ▼
+
+Dashboard Premium
 ```
 
 ---
 
-# 📊 Funcionalidades
+# 📂 Estrutura
 
-## 📥 Carregamento
+```
+AimCoachAI
 
-- Leitura automática de múltiplos CSVs
-- Histórico completo do jogador
-- Consolidação dos treinos
+app/
+    streamlit_app.py
 
----
+src/
 
-## 🧹 Pré-processamento
+    coach_ai.py
+    feature_engineering.py
+    history_window.py
+    insights_engine.py
+    load_data.py
+    map_statistics.py
+    performance_engine.py
+    player_profile.py
+    preprocessing.py
+    score_engine.py
+    utils.py
+    xp_engine.py
 
-- Limpeza de registros inválidos
-- Conversão de tipos
-- Padronização dos dados
-- Tratamento de valores ausentes
+data/
 
----
+    raw/
+    processed/
 
-## ⚙ Feature Engineering
+models/
 
-Extração de métricas como:
+reports/
 
-- Accuracy média
-- Accuracy global
-- TTK médio
-- Consistência
-- Kills por minuto
-- Overshots
-- Dano desperdiçado
-- Kills perfeitos
-- Tempo total de treino
+tests/
 
----
-
-## 🏆 Score Engine
-
-Cada treino recebe uma pontuação para diferentes habilidades.
-
-Atualmente são avaliadas:
-
-- 🎯 Precisão
-- ⚡ Velocidade
-- 🔫 Controle dos disparos
-- 📊 Consistência
-
-Além disso é calculado:
-
-- ⭐ Score Geral
+README.md
+requirements.txt
+main.py
+```
 
 ---
 
-## 📈 Performance Engine
+# 🛠 Tecnologias
 
-Analisa a evolução do jogador.
-
-Inclui:
-
-- Média histórica
-- Melhor treino
-- Pior treino
-- Tendência de evolução
-- Crescimento percentual
-- Habilidades em queda
-
----
-
-## 💡 Insights Engine
-
-Transforma métricas em linguagem natural.
-
-Exemplo:
-
-> Controle de tiros apresenta melhora nos treinos recentes.
->
-> Está acima da média histórica.
->
-> Evoluiu 95% desde o primeiro treino.
+- Python
+- Pandas
+- NumPy
+- Plotly
+- Streamlit
+- Scikit-Learn
+- Machine Learning
+- Engenharia de Dados
+- Data Analytics
+- Git
+- GitHub
 
 ---
 
-## 📊 Dashboard
+# 📈 Estatísticas do Projeto
 
-Dashboard desenvolvido em Streamlit contendo:
+✔ Mais de **120 mil registros** processados
 
-- 📈 Histórico de evolução
-- 🎯 Radar de habilidades
-- ⭐ Score Geral
-- 📊 Métricas principais
-- 💡 Insights automáticos
+✔ Mais de **900 sessões** analisadas
 
----
+✔ Sistema próprio de Score
 
-# 🎯 Exemplo de Dashboard
+✔ Sistema próprio de XP
 
-O sistema apresenta informações como:
+✔ Sistema próprio de Progressão
 
-- Score Geral
-- Precisão
-- Velocidade
-- Controle
-- Consistência
-- Evolução histórica
-- Radar das habilidades
-- Principal ponto de melhoria
+✔ Coach AI
+
+✔ Dashboard Premium
+
+✔ Insights automáticos
+
+✔ Radar de habilidades
 
 ---
 
-# 📌 Próximas Funcionalidades
+# 📌 Roadmap
 
-- 🤖 Recommendation Engine
-- 👤 Perfil automático do jogador
-- 🧠 Machine Learning para previsão de desempenho
-- 📄 Exportação de relatórios em PDF
-- ☁ Upload de CSV diretamente pelo Dashboard
-- 📈 Comparação entre sessões
-- 🎮 Suporte para diferentes Aim Trainers
+## ✅ Concluído
+
+- Score Engine
+- Performance Engine
+- Player Profile
+- Coach AI
+- Sistema de XP
+- Progressão por Elos
+- Dashboard Premium
+- Insights Automáticos
+- Radar
+- Histórico por Categoria
 
 ---
 
-# 📚 Objetivos de Aprendizagem
+## 🚧 Em desenvolvimento
 
-Este projeto foi desenvolvido para praticar conceitos de:
+- Upload de CSV pelo Dashboard
+- Machine Learning para previsão de desempenho
+- Comparação entre jogadores
+- Banco de Dados
+- API REST
+- Sistema de Login
+- Exportação PDF
+- Ranking Global
+- Integração automática com KovaaK's
+
+---
+
+# 🎯 Objetivos de Aprendizagem
+
+Este projeto foi desenvolvido para aprofundar conhecimentos em:
 
 - Engenharia de Dados
-- Análise Exploratória
+- Python
+- Pandas
+- Estatística
 - Feature Engineering
 - Visualização de Dados
 - Arquitetura de Software
+- Inteligência Artificial
 - Machine Learning
 - Streamlit
 - Plotly
-- Python
 
 ---
 
 # 👨‍💻 Autor
 
-**Matheus Paleari**
+## Matheus Paleari
 
-GitHub:
+🔗 GitHub
+
 https://github.com/matheuspaleari
+
+---
+
+⭐ Se este projeto foi útil para você, considere deixar uma estrela no repositório.
