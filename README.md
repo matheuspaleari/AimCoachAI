@@ -13,10 +13,6 @@ Sistema inteligente para análise de desempenho em **Aim Trainers**, utilizando 
 <img width="1753" height="743" alt="image" src="https://github.com/user-attachments/assets/4258731c-024f-44fd-951f-55b685907253" />
 
 
-<p align="center">
-
-![Dashboard](images/dashboard.png)
-
 </p>
 
 ---
