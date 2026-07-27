@@ -46,3 +46,32 @@ COLUNAS_NUMERICAS = [
     "Cheated",
     "OverShots",
 ]
+
+# ==========================================================
+# PESOS DO SCORE POR CATEGORIA
+# ==========================================================
+
+PESOS_CATEGORIA = {
+
+    "Clicking": {
+        "precisao": 0.45,
+        "velocidade": 0.30,
+        "controle": 0.15,
+        "consistencia": 0.10,
+    },
+
+    "Tracking": {
+        "precisao": 0.20,
+        "velocidade": 0.20,
+        "controle": 0.40,
+        "consistencia": 0.20,
+    },
+
+    "Target Switching": {
+        "precisao": 0.30,
+        "velocidade": 0.35,
+        "controle": 0.20,
+        "consistencia": 0.15,
+    },
+
+}

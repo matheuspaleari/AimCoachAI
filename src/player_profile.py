@@ -19,64 +19,91 @@ ESTILOS = {
 }
 
 
+COLUNAS_HABILIDADES = list(HABILIDADES.keys())
+
+
 def classificar_nivel(score_geral: float) -> str:
     """
-    Classifica o nível atual do jogador com base no score geral.
+    Classifica o elo de mira estimado.
+
+    Não representa o elo competitivo real do VALORANT.
     """
 
     if pd.isna(score_geral):
         return "Não classificado"
 
-    if score_geral >= 85:
-        return "Elite"
+    if score_geral >= 96:
+        return "☀️ Radiante"
 
-    if score_geral >= 70:
-        return "Avançado"
+    if score_geral >= 90:
+        return "🔴 Imortal"
 
-    if score_geral >= 50:
-        return "Intermediário"
+    if score_geral >= 83:
+        return "🟢 Ascendente"
 
-    return "Iniciante"
+    if score_geral >= 75:
+        return "💎 Diamante"
+
+    if score_geral >= 67:
+        return "🔷 Platina"
+
+    if score_geral >= 58:
+        return "🟡 Ouro"
+
+    if score_geral >= 45:
+        return "⚪ Prata"
+
+    if score_geral >= 25:
+        return "🟤 Bronze"
+
+    return "⚙️ Ferro"
 
 
-def identificar_maior_habilidade(treino: pd.Series) -> str:
+def identificar_maior_habilidade(
+    scores_medios: pd.Series,
+) -> str:
     """
-    Retorna o nome técnico da habilidade com maior score.
+    Retorna a habilidade com maior score médio.
     """
 
-    scores_habilidades = {
-        coluna: treino.get(coluna, 0)
-        for coluna in HABILIDADES
-    }
+    habilidades_validas = scores_medios[
+        COLUNAS_HABILIDADES
+    ].dropna()
 
-    return max(
-        scores_habilidades,
-        key=scores_habilidades.get,
+    if habilidades_validas.empty:
+        return "score_precisao"
+
+    return habilidades_validas.idxmax()
+
+
+def identificar_menor_habilidade(
+    scores_medios: pd.Series,
+) -> str:
+    """
+    Retorna a habilidade com menor score médio.
+    """
+
+    habilidades_validas = scores_medios[
+        COLUNAS_HABILIDADES
+    ].dropna()
+
+    if habilidades_validas.empty:
+        return "score_precisao"
+
+    return habilidades_validas.idxmin()
+
+
+def identificar_estilo(
+    scores_medios: pd.Series,
+) -> str:
+    """
+    Identifica o estilo predominante considerando
+    a média dos cenários avaliados.
+    """
+
+    maior_habilidade = identificar_maior_habilidade(
+        scores_medios
     )
-
-
-def identificar_menor_habilidade(treino: pd.Series) -> str:
-    """
-    Retorna o nome técnico da habilidade com menor score.
-    """
-
-    scores_habilidades = {
-        coluna: treino.get(coluna, 0)
-        for coluna in HABILIDADES
-    }
-
-    return min(
-        scores_habilidades,
-        key=scores_habilidades.get,
-    )
-
-
-def identificar_estilo(treino: pd.Series) -> str:
-    """
-    Identifica o estilo predominante do jogador.
-    """
-
-    maior_habilidade = identificar_maior_habilidade(treino)
 
     return ESTILOS.get(
         maior_habilidade,
@@ -97,24 +124,26 @@ def gerar_descricao_perfil(
     return (
         f"Jogador de nível {nivel}, com perfil {estilo}. "
         f"Sua principal especialidade é {especialidade}, "
-        f"enquanto o ponto prioritário de evolução é {ponto_fraco}."
+        f"enquanto o ponto prioritário de evolução é "
+        f"{ponto_fraco}."
     )
 
 
-def gerar_perfil_jogador(scores: pd.DataFrame) -> dict:
+def gerar_perfil_jogador(
+    scores: pd.DataFrame,
+) -> dict:
     """
-    Gera o perfil do jogador com base no treino mais recente.
-
-    Retorna nível, estilo, especialidade, ponto fraco
-    e os scores atuais.
+    Gera o perfil geral do jogador usando a média dos
+    cenários que possuem histórico suficiente.
     """
 
     if scores.empty:
-        log_aviso("Nenhum score disponível para gerar o perfil.")
+        log_aviso(
+            "Nenhum score disponível para gerar o perfil."
+        )
         return {}
 
     colunas_necessarias = [
-        "Treino",
         "score_precisao",
         "score_velocidade",
         "score_controle",
@@ -131,43 +160,69 @@ def gerar_perfil_jogador(scores: pd.DataFrame) -> dict:
     if colunas_ausentes:
         log_aviso(
             "Não foi possível gerar o perfil. "
-            f"Colunas ausentes: {', '.join(colunas_ausentes)}"
+            f"Colunas ausentes: "
+            f"{', '.join(colunas_ausentes)}"
         )
         return {}
 
-    treino_atual = scores.iloc[-1]
+    dados_validos = scores.dropna(
+        subset=colunas_necessarias,
+    ).copy()
 
-    maior_habilidade = identificar_maior_habilidade(treino_atual)
-    menor_habilidade = identificar_menor_habilidade(treino_atual)
+    if dados_validos.empty:
+        log_aviso(
+            "Nenhum score válido disponível para gerar o perfil."
+        )
+        return {}
+
+    scores_medios = (
+        dados_validos[colunas_necessarias]
+        .mean()
+    )
+
+    maior_habilidade = identificar_maior_habilidade(
+        scores_medios
+    )
+
+    menor_habilidade = identificar_menor_habilidade(
+        scores_medios
+    )
 
     especialidade = HABILIDADES[maior_habilidade]
     ponto_fraco = HABILIDADES[menor_habilidade]
 
-    score_geral = float(treino_atual["score_geral"])
+    score_geral = float(
+        scores_medios["score_geral"]
+    )
+
     nivel = classificar_nivel(score_geral)
-    estilo = identificar_estilo(treino_atual)
+    estilo = identificar_estilo(scores_medios)
 
     perfil = {
-        "treino_atual": treino_atual["Treino"],
+        "treino_atual": "Média dos cenários válidos",
+        "cenarios_avaliados": len(dados_validos),
         "nivel": nivel,
         "estilo": estilo,
         "especialidade": especialidade,
         "ponto_fraco": ponto_fraco,
-        "score_geral": round(score_geral, 2),
+        "score_geral": round(
+            score_geral,
+            2,
+        ),
         "score_precisao": round(
-            float(treino_atual["score_precisao"]),
+            float(scores_medios["score_precisao"]),
             2,
         ),
         "score_velocidade": round(
-            float(treino_atual["score_velocidade"]),
+            float(scores_medios["score_velocidade"]),
             2,
         ),
         "score_controle": round(
-            float(treino_atual["score_controle"]),
+            float(scores_medios["score_controle"]),
             2,
         ),
         "score_consistencia": round(
-            float(treino_atual["score_consistencia"]),
+            float(scores_medios["score_consistencia"]),
             2,
         ),
     }
@@ -180,7 +235,8 @@ def gerar_perfil_jogador(scores: pd.DataFrame) -> dict:
     )
 
     log_info(
-        f"Perfil do jogador gerado: "
+        f"Perfil do jogador gerado com base em "
+        f"{perfil['cenarios_avaliados']} cenário(s): "
         f"{perfil['nivel']} - {perfil['estilo']}"
     )
 

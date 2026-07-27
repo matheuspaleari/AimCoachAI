@@ -6,6 +6,8 @@ from src.config import RAW_DATA_DIR
 from src.parsers.file_classifier import identificar_tipo_csv
 from src.parsers.map_classifier import classificar_mapa
 from src.utils import log_aviso, log_erro, log_info
+from src.parsers.date_parser import extrair_data_arquivo
+
 
 
 def carregar_dados(pasta: Path = RAW_DATA_DIR) -> pd.DataFrame:
@@ -60,6 +62,17 @@ def carregar_dados(pasta: Path = RAW_DATA_DIR) -> pd.DataFrame:
             # ======================================================
 
             mapa = classificar_mapa(arquivo.name)
+            
+            data_arquivo = extrair_data_arquivo(arquivo.name)
+            
+            if (
+                data_arquivo["ano"] is None
+                or data_arquivo["ano"] < 2026
+            ):
+                log_aviso(
+                    f"Arquivo anterior a 2026 ignorado: {arquivo.name}"
+                )
+                continue
 
             dados_arquivo["Treino"] = arquivo.stem
             dados_arquivo["Cenario"] = mapa["cenario"]
@@ -68,7 +81,16 @@ def carregar_dados(pasta: Path = RAW_DATA_DIR) -> pd.DataFrame:
             dados_arquivo["OrigemClassificacao"] = mapa[
                 "origem_classificacao"
             ]
+            
+            dados_arquivo["DataTreino"] = data_arquivo["data_treino"]
+            dados_arquivo["Data"] = data_arquivo["data"]
+            dados_arquivo["Horario"] = data_arquivo["horario"]
+            dados_arquivo["Ano"] = data_arquivo["ano"]
+            dados_arquivo["Mes"] = data_arquivo["mes"]
+            dados_arquivo["Dia"] = data_arquivo["dia"]
 
+            print(dados_arquivo.columns.tolist())
+            
             dataframes.append(dados_arquivo)
 
             log_info(
